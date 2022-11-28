@@ -4,22 +4,20 @@ import numpy as np
 
 pygame.init()
 
-width, height = 400, 600
-boardwidth, boardheight = 400, 400
+boardwidth, boardheight = 800, 800
+width, height = boardwidth, boardheight+200
 black = (0, 0, 0)
 white = (255, 255, 255)
 yellow = (255, 255, 25)
 grey = (125, 125, 125)
 border_size = 10
-cells_per_row = 10
+cells_per_row = 79 # should go into "boardwidth-10" nicely...
 cell_size = -1
 buffer = 1
-speed = [60]
+autospeed = 100 # in ms
 
 screen = pygame.display.set_mode((width, height))
 screen.fill(white)
-
-clock = pygame.time.Clock()
 
 pygame.display.set_caption("Game of Life")
 
@@ -100,7 +98,6 @@ renderCells(board, cells, cell_rects)
 AUTO_UPDATE = pygame.USEREVENT + 1
 pygame.time.set_timer(AUTO_UPDATE, 0)
 
-
 running = True
 updateThisFrame = False
 
@@ -116,7 +113,7 @@ while running:
             elif event.key == pygame.K_ESCAPE:
                 running = False
             elif event.key == pygame.K_r:
-                pygame.time.set_timer(AUTO_UPDATE, 1000)
+                pygame.time.set_timer(AUTO_UPDATE, autospeed)
             elif event.key == pygame.K_s:
                 pygame.time.set_timer(AUTO_UPDATE, 0)
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -154,6 +151,5 @@ while running:
     pygame.display.flip()
 
     cells[:] = next_cells[:]
-    clock.tick(speed[0])
 
 pygame.quit()
