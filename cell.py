@@ -9,11 +9,11 @@ class Cell():
         self.size = size
     
     def __str__(self):
-        return str(self.index)
+        return str(self.state)
         
     
     def __repr__(self):
-        return str(self.index)
+        return str(self.state)
     
     # update self.state accordingly
     def update(self, cells):
@@ -30,13 +30,8 @@ class Cell():
         sum = 0
         for a in range(i-1, i+2):
             for b in range(j-1, j+2):
-                # if (i == 4 and j == 4):
-                #     print("i, j: "+str(a)+", "+str(b)+", state = "+str(cells[a][b].state))
                 sum += cells[a][b].state
         sum -= cells[i][j].state
-
-        # if (i == 4 and j == 4):
-        #     print(sum)
 
         # update state
         if ((self.state == 0) and (sum == 3)):

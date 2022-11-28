@@ -1,5 +1,6 @@
 import pygame
 from cell import Cell
+import numpy as np
 
 pygame.init()
 
@@ -38,9 +39,9 @@ def createCells(brect, cpr, bffr, init_state):
     return arr
 
 def updateCells(oldcells, newcells):
-    for i in range(len(newcells)):
-        for j in range(len(newcells[0])):
-            newcells[i][j].update(oldcells)
+    for col in newcells:
+        for c in col:
+            c.update(oldcells)
 
 def renderCells(cell_board, cells, cellrects):
     for i in range(len(cells)):
@@ -56,6 +57,10 @@ def flipCell(cells, i, j):
         cell.state = 1
     elif cell.state == 1:
         cell.state = 0
+
+def printBoard(cell_list):
+    print(np.matrix(cell_list))
+    print("\n")
 
 # make board
 board = pygame.Surface((width - border_size + buffer, height - border_size + buffer)).convert()
@@ -83,31 +88,37 @@ while running:
                 updateThisFrame = True
             elif event.key == pygame.K_ESCAPE:
                 running = False
+            elif event.key == pygame.K_p:
+                printBoard(cells)
         if event.type == pygame.MOUSEBUTTONDOWN:
             left_click = pygame.mouse.get_pressed()[0]
             for i in range(len(cells)):
                 for j in range(len(cells[0])):
                     if cell_rects[i][j].collidepoint(pygame.mouse.get_pos()):
                         flipCell(cells, i, j)
-                        #print("Cell "+str(cells[i][j]))
 
     
     # logic
-    next_cells = list(cells)
+    next_cells = [None]*len(cells)
+
+    for i in range(len(cells)):
+        ncol = [None]*len(cells)
+        for j in range(len(cells[0])):
+            template_cell = cells[i][j]
+            ncell = Cell(template_cell.x, template_cell.y, template_cell.index, template_cell.size, template_cell.state)
+            ncol[j] = ncell
+        next_cells[i] = ncol
+
     if updateThisFrame:
-        for i in range(len(cells)):
-            for j in range(len(cells[0])):
-                
         updateCells(cells, next_cells)
         updateThisFrame = False
     
-
     # rendering
     renderCells(board, next_cells, cell_rects)
 
     screen.blit(board, (border_size//2, border_size//2))
     pygame.display.flip()
 
-    cells = next_cells
+    cells[:] = next_cells[:]
 
 pygame.quit()
