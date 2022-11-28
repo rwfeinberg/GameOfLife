@@ -1,5 +1,7 @@
 import pygame
 
+wrap = True
+
 class Cell():
     def __init__(self, x, y, index, size, state):
         self.state = state
@@ -24,13 +26,19 @@ class Cell():
         sum = 0
         for a in range(i-1, i+2):
             for b in range(j-1, j+2):
-                valid_cell = True
 
-                if (a < 0 or b < 0 or a >= max or b >= max):
-                    valid_cell = False
+                if not wrap:
+                    valid_cell = True
 
-                if valid_cell:
-                    sum += cells[a][b].state
+                    if (a < 0 or b < 0 or a >= max or b >= max):
+                        valid_cell = False
+
+                    if valid_cell:
+                        sum += cells[a][b].state
+                else:
+                    x = (a+len(cells)) % len(cells)
+                    y = (b+len(cells)) % len(cells)
+                    sum += cells[x][y].state
 
         sum -= cells[i][j].state
 
