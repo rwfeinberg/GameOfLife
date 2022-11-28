@@ -1,17 +1,22 @@
 import pygame
 from cell import Cell
 import numpy as np
+import ctypes
 
 pygame.init()
 
-boardwidth, boardheight = 800, 800
+user32 = ctypes.windll.user32
+sw, sh = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
+minsize = (int(str((min(sw, sh)))[0])*100)-200
+
+boardwidth, boardheight = minsize, minsize
 width, height = boardwidth, boardheight+200
 black = (0, 0, 0)
 white = (255, 255, 255)
 yellow = (255, 255, 25)
 grey = (125, 125, 125)
 border_size = 10
-cells_per_row = 79 # should go into "boardwidth-10" nicely...
+cells_per_row = (minsize-10)//10 # should go into "boardwidth-10" nicely...
 cell_size = -1
 buffer = 1
 autospeed = 100 # in ms
@@ -20,8 +25,6 @@ screen = pygame.display.set_mode((width, height))
 screen.fill(white)
 
 pygame.display.set_caption("Game of Life")
-
-#pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_SIZEALL)
 
 def createCells(brect, cpr, bffr, init_state):
     csize = (brect.size[0] - bffr*cpr) / (cpr)
