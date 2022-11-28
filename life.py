@@ -4,7 +4,8 @@ import numpy as np
 
 pygame.init()
 
-width, height = 400, 400
+width, height = 400, 600
+boardwidth, boardheight = 400, 400
 black = (0, 0, 0)
 white = (255, 255, 255)
 yellow = (255, 255, 25)
@@ -75,8 +76,15 @@ def printBoard(cell_list):
     print(np.matrix(cell_list))
     print("\n")
 
+def renderText(msg, font, fontsize, color, bgcolor, x, y, scrn):
+    font = pygame.font.SysFont(font, fontsize, bold=True)
+    helptext = font.render(msg, False, color, bgcolor)
+    helptextrect = helptext.get_rect()
+    helptextrect.center = (x, y)
+    scrn.blit(helptext, helptextrect)
+
 # make board
-board = pygame.Surface((width - border_size + buffer, height - border_size + buffer)).convert()
+board = pygame.Surface((boardwidth - border_size + buffer, boardheight - border_size + buffer)).convert()
 board_rect = board.get_rect()
 board.fill(black)
 
@@ -128,6 +136,18 @@ while running:
     
     # rendering
     renderCells(board, next_cells, cell_rects)
+    
+    message1 = "Press SPACE to advance the simulation by 1 step."
+    x1, y1 = (width // 2, height - 175)
+    renderText(message1, "arial", 20, black, None, x1, y1, screen)
+
+    message2 = "Press R to auto-run simulation."
+    x2, y2 = (width // 2, height - 150)
+    renderText(message2, "arial", 20, black, None, x2, y2, screen)
+
+    message3 = "Press S to stop the auto-run."
+    x3, y3 = (width // 2, height - 125)
+    renderText(message3, "arial", 20, black, None, x3, y3, screen)
 
     screen.blit(board, (border_size//2, border_size//2))
     pygame.display.flip()
