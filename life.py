@@ -14,6 +14,7 @@ border_size = 10
 cells_per_row = 10
 cell_size = -1
 buffer = 1
+speed = [60]
 
 screen = pygame.display.set_mode((width, height))
 screen.fill(white)
@@ -153,5 +154,6 @@ while running:
     pygame.display.flip()
 
     cells[:] = next_cells[:]
+    clock.tick(speed[0])
 
 pygame.quit()

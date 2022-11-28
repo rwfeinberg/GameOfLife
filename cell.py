@@ -20,17 +20,24 @@ class Cell():
         i, j = self.index
         max = len(cells) - 1
 
-        # check if edge cell
-        if (i == 0 or j == 0 or i == max or j == max):
-            #print("Cell "+str(self.index)+" is on an edge")
-            return
+        # # check if edge cell
+        # if (i == 0 or j == 0 or i == max or j == max):
+        #     #print("Cell "+str(self.index)+" is on an edge")
+        #     return
         
 
         # scan neighbors
         sum = 0
         for a in range(i-1, i+2):
             for b in range(j-1, j+2):
-                sum += cells[a][b].state
+                valid_cell = True
+
+                if (a < 0 or b < 0 or a >= max or b >= max):
+                    valid_cell = False
+
+                if valid_cell:
+                    sum += cells[a][b].state
+
         sum -= cells[i][j].state
 
         # update state
