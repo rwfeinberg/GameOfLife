@@ -38,6 +38,19 @@ def createCells(brect, cpr, bffr, init_state):
     
     return arr
 
+def makeNextCells(old_cells):
+    next_cells = [None]*len(old_cells)
+
+    for i in range(len(old_cells)):
+        ncol = [None]*len(old_cells)
+        for j in range(len(old_cells[0])):
+            template_cell = old_cells[i][j]
+            ncell = Cell(template_cell.x, template_cell.y, template_cell.index, template_cell.size, template_cell.state)
+            ncol[j] = ncell
+        next_cells[i] = ncol
+    
+    return next_cells
+
 def updateCells(oldcells, newcells):
     for col in newcells:
         for c in col:
@@ -74,6 +87,11 @@ cells = createCells(board_rect, cells_per_row, buffer, 0)
 cell_rects = [[None]*cells_per_row for i in range(cells_per_row)]
 renderCells(board, cells, cell_rects)
 
+# custom events
+AUTO_UPDATE = pygame.USEREVENT + 1
+pygame.time.set_timer(AUTO_UPDATE, 0)
+
+
 running = True
 updateThisFrame = False
 
@@ -88,26 +106,21 @@ while running:
                 updateThisFrame = True
             elif event.key == pygame.K_ESCAPE:
                 running = False
-            elif event.key == pygame.K_p:
-                printBoard(cells)
+            elif event.key == pygame.K_r:
+                pygame.time.set_timer(AUTO_UPDATE, 1000)
+            elif event.key == pygame.K_s:
+                pygame.time.set_timer(AUTO_UPDATE, 0)
         if event.type == pygame.MOUSEBUTTONDOWN:
             left_click = pygame.mouse.get_pressed()[0]
             for i in range(len(cells)):
                 for j in range(len(cells[0])):
                     if cell_rects[i][j].collidepoint(pygame.mouse.get_pos()):
                         flipCell(cells, i, j)
+        if event.type == AUTO_UPDATE:
+            updateThisFrame = True
 
-    
     # logic
-    next_cells = [None]*len(cells)
-
-    for i in range(len(cells)):
-        ncol = [None]*len(cells)
-        for j in range(len(cells[0])):
-            template_cell = cells[i][j]
-            ncell = Cell(template_cell.x, template_cell.y, template_cell.index, template_cell.size, template_cell.state)
-            ncol[j] = ncell
-        next_cells[i] = ncol
+    next_cells = makeNextCells(cells)
 
     if updateThisFrame:
         updateCells(cells, next_cells)
