@@ -21,6 +21,8 @@ screen.fill(white)
 
 pygame.display.set_caption("Game of Life")
 
+#pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_SIZEALL)
+
 def createCells(brect, cpr, bffr, init_state):
     csize = (brect.size[0] - bffr*cpr) / (cpr)
     arr = [None]*cpr
@@ -120,7 +122,8 @@ while running:
             left_click = pygame.mouse.get_pressed()[0]
             for i in range(len(cells)):
                 for j in range(len(cells[0])):
-                    if cell_rects[i][j].collidepoint(pygame.mouse.get_pos()):
+                    mx, my = pygame.mouse.get_pos()
+                    if cell_rects[i][j].collidepoint(mx-4, my-4):
                         flipCell(cells, i, j)
         if event.type == AUTO_UPDATE:
             updateThisFrame = True
